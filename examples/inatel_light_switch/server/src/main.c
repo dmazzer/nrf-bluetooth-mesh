@@ -55,7 +55,7 @@
 #include "device_state_manager.h"
 #include "nrf_mesh_node_config.h"
 
-#include "simple_on_off_server.h"
+#include "inatel_model_server.h"
 
 #include "light_switch_example_common.h"
 
@@ -70,11 +70,11 @@
  * Static data
  *****************************************************************************/
 
-static simple_on_off_server_t m_server;
+static inatel_model_server_t m_server;
 
 /* Forward declaration */
-static bool get_cb(const simple_on_off_server_t * p_server);
-static bool set_cb(const simple_on_off_server_t * p_server, bool value);
+static bool get_cb(const inatel_model_server_t * p_server);
+static bool set_cb(const inatel_model_server_t * p_server, bool value);
 
 /*****************************************************************************
  * Static utility functions
@@ -85,7 +85,7 @@ static void configuration_setup(void * p_unused)
     __LOG(LOG_SRC_APP, LOG_LEVEL_INFO, "Initializing and adding models\n");
     m_server.get_cb = get_cb;
     m_server.set_cb = set_cb;
-    ERROR_CHECK(simple_on_off_server_init(&m_server, 0));
+    ERROR_CHECK(inatel_model_server_init(&m_server, 0));
     ERROR_CHECK(access_model_subscription_list_alloc(m_server.model_handle));
     hal_led_mask_set(LEDS_MASK, true);
 }
@@ -101,12 +101,12 @@ static void provisioning_complete(void * p_unused)
  * Simple OnOff Callbacks
  *****************************************************************************/
 
-static bool get_cb(const simple_on_off_server_t * p_server)
+static bool get_cb(const inatel_model_server_t * p_server)
 {
     return hal_led_pin_get(LED_PIN_NUMBER);
 }
 
-static bool set_cb(const simple_on_off_server_t * p_server, bool value)
+static bool set_cb(const inatel_model_server_t * p_server, bool value)
 {
     __LOG(LOG_SRC_APP, LOG_LEVEL_INFO, "Got SET command to %u\n", value);
     hal_led_pin_set(LED_PIN_NUMBER, value);

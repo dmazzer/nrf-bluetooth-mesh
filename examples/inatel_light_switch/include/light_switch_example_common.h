@@ -47,7 +47,7 @@
  * @note Maximum three servers supported since we're using buttons 1-3 for individual control and
  * button 4 for group control.
  */
-#define SERVER_COUNT (3)
+#define SERVER_COUNT (2)
 #if SERVER_COUNT > 3
 #error Maximum 3 servers currently supported by client example.
 #endif

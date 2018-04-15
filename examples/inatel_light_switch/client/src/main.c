@@ -58,7 +58,7 @@
 
 #include "config_client.h"
 #include "health_client.h"
-#include "simple_on_off_client.h"
+#include "inatel_model_client.h"
 
 #include "simple_hal.h"
 #include "provisioner.h"
@@ -88,14 +88,14 @@ static dsm_handle_t m_devkey_handles[SERVER_COUNT];
 static dsm_handle_t m_server_handles[SERVER_COUNT];
 static dsm_handle_t m_group_handle;
 
-static simple_on_off_client_t m_clients[CLIENT_COUNT];
+static inatel_model_client_t m_clients[CLIENT_COUNT];
 static health_client_t m_health_client;
 
 static uint16_t m_provisioned_devices;
 static uint16_t m_configured_devices;
 
 /* Forward declarations */
-static void client_status_cb(const simple_on_off_client_t * p_self, simple_on_off_status_t status, uint16_t src);
+static void client_status_cb(const inatel_model_client_t * p_self, inatel_model_status_t status, uint16_t src);
 static void health_event_cb(const health_client_t * p_client, const health_client_evt_t * p_event);
 
 /*****************************************************************************
@@ -201,7 +201,7 @@ static void access_setup(void)
     for (uint32_t i = 0; i < CLIENT_COUNT; ++i)
     {
         m_clients[i].status_cb = client_status_cb;
-        ERROR_CHECK(simple_on_off_client_init(&m_clients[i], i));
+        ERROR_CHECK(inatel_model_client_init(&m_clients[i], i));
     }
 
     if (dsm_flash_config_load())
@@ -252,27 +252,27 @@ static void access_setup(void)
     }
 }
 
-static uint32_t server_index_get(const simple_on_off_client_t * p_client)
+static uint32_t server_index_get(const inatel_model_client_t * p_client)
 {
     uint32_t index = (((uint32_t) p_client - ((uint32_t) &m_clients[0]))) / sizeof(m_clients[0]);
     NRF_MESH_ASSERT(index < SERVER_COUNT);
     return index;
 }
 
-static void client_status_cb(const simple_on_off_client_t * p_self, simple_on_off_status_t status, uint16_t src)
+static void client_status_cb(const inatel_model_client_t * p_self, inatel_model_status_t status, uint16_t src)
 {
     uint32_t server_index = server_index_get(p_self);
     switch (status)
     {
-        case SIMPLE_ON_OFF_STATUS_ON:
+        case INATEL_MODEL_STATUS_ON:
             hal_led_pin_set(BSP_LED_0 + server_index, true);
             break;
 
-        case SIMPLE_ON_OFF_STATUS_OFF:
+        case INATEL_MODEL_STATUS_OFF:
             hal_led_pin_set(BSP_LED_0 + server_index, false);
             break;
 
-        case SIMPLE_ON_OFF_STATUS_ERROR_NO_REPLY:
+        case INATEL_MODEL_STATUS_ERROR_NO_REPLY:
             hal_led_blink_ms(LEDS_MASK, 100, 6);
             break;
 
@@ -330,12 +330,12 @@ static void button_event_handler(uint32_t button_number)
         case 1:
         case 2:
             /* Invert LED. */
-            status = simple_on_off_client_set(&m_clients[button_number],
+            status = inatel_model_client_set(&m_clients[button_number],
                                               !hal_led_pin_get(BSP_LED_0 + button_number));
             break;
         case 3:
             /* Group message: invert all LEDs. */
-            status = simple_on_off_client_set_unreliable(&m_clients[GROUP_CLIENT_INDEX],
+            status = inatel_model_client_set_unreliable(&m_clients[GROUP_CLIENT_INDEX],
                                                          !hal_led_pin_get(BSP_LED_0 + button_number), 3);
             break;
         default:

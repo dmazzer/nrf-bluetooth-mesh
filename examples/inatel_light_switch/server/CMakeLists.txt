@@ -5,7 +5,7 @@ add_executable(${target}
     "${MBTLE_SOURCE_DIR}/examples/nrf_mesh_sdk.c"
     "${CMAKE_SOURCE_DIR}/examples/common/src/simple_hal.c"
     ${WEAK_SOURCE_FILES}
-    ${SIMPLE_ON_OFF_SERVER_SOURCE_FILES}
+    ${INATEL_MODEL_SERVER_SOURCE_FILES}
     ${CONFIG_SERVER_SOURCE_FILES}
     ${HEALTH_SERVER_SOURCE_FILES}
     ${ACCESS_SOURCE_FILES}
@@ -20,7 +20,7 @@ target_include_directories(${target} PUBLIC
     "${CMAKE_SOURCE_DIR}/examples"
     "${CMAKE_SOURCE_DIR}/examples/common/include"
     "${SDK_ROOT}/components/drivers_nrf/delay"
-    ${SIMPLE_ON_OFF_SERVER_INCLUDE_DIRS}
+    ${INATEL_MODEL_SERVER_INCLUDE_DIRS}
     ${CONFIG_SERVER_INCLUDE_DIRS}
     ${HEALTH_SERVER_INCLUDE_DIRS}
     ${ACCESS_INCLUDE_DIRS}

@@ -66,6 +66,8 @@ typedef struct __attribute((packed))
 {
     uint8_t on_off; /**< State to set. */
     uint8_t tid;    /**< Transaction number. */
+    uint8_t payload_fixed[45];	/**< Fixed part of the payload */
+    uint8_t payload_counter[5];	/**< Variable part of the payload (counter) */
 } inatel_model_msg_set_t;
 
 /** Message format for th Simple OnOff Set Unreliable message. */
@@ -73,6 +75,8 @@ typedef struct __attribute((packed))
 {
     uint8_t on_off; /**< State to set. */
     uint8_t tid;    /**< Transaction number. */
+    uint8_t payload_fixed[45];	/**< Fixed part of the payload */
+    uint8_t payload_counter[5];	/**< Variable part of the payload (counter) */
 } inatel_model_msg_set_unreliable_t;
 
 /** Message format for the Simple OnOff Status message. */

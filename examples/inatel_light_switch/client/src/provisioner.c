@@ -51,7 +51,7 @@
 
 #include "config_client.h"
 #include "access_config.h"
-#include "simple_on_off_server.h"
+#include "inatel_model_server.h"
 #include "health_common.h"
 
 #include "nrf_mesh_sdk.h"
@@ -140,7 +140,7 @@ static void do_config_step(void)
             __LOG(LOG_SRC_APP, LOG_LEVEL_INFO, "Binding appkey to the Simple On/Off model\n");
             access_model_id_t model_id;
             model_id.company_id = ACCESS_COMPANY_ID_NORDIC;
-            model_id.model_id = SIMPLE_ON_OFF_SERVER_MODEL_ID;
+            model_id.model_id = INATEL_MODEL_SERVER_MODEL_ID;
             uint16_t element_address = m_target_address;
             ERROR_CHECK(config_client_model_app_bind(element_address, APPKEY_INDEX, model_id));
             break;
@@ -183,7 +183,7 @@ static void do_config_step(void)
             pubstate.retransmit_count = 1;
             pubstate.retransmit_interval = 0;
             pubstate.model_id.company_id = ACCESS_COMPANY_ID_NORDIC;
-            pubstate.model_id.model_id = SIMPLE_ON_OFF_SERVER_MODEL_ID;
+            pubstate.model_id.model_id = INATEL_MODEL_SERVER_MODEL_ID;
             __LOG(LOG_SRC_APP, LOG_LEVEL_INFO, "Setting publication address for the On/Off server to 0x%04x\n", pubstate.publish_address.value);
 
             ERROR_CHECK(config_client_model_publication_set(&pubstate));
@@ -200,7 +200,7 @@ static void do_config_step(void)
             address.value = GROUP_ADDRESS;
             access_model_id_t model_id;
             model_id.company_id = ACCESS_COMPANY_ID_NORDIC;
-            model_id.model_id = SIMPLE_ON_OFF_SERVER_MODEL_ID;
+            model_id.model_id = INATEL_MODEL_SERVER_MODEL_ID;
             ERROR_CHECK(config_client_model_subscription_add(element_address, address, model_id));
             break;
         }
