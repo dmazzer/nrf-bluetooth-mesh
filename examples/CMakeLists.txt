@@ -1,0 +1,7 @@
+set(WEAK_SOURCE_FILES "${CMAKE_CURRENT_SOURCE_DIR}/nrf_mesh_weak.c" CACHE INTERNAL "")
+add_subdirectory("beaconing")
+add_subdirectory("dfu")
+add_subdirectory("light_switch")
+add_subdirectory("inatel_light_switch")
+add_subdirectory("pb_remote")
+add_subdirectory("serial")
