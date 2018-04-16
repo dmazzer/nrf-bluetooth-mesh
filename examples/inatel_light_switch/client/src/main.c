@@ -334,6 +334,8 @@ static void button_event_handler(uint32_t button_number)
                                               !hal_led_pin_get(BSP_LED_0 + button_number));
             break;
         case 3:
+//        	status = inatel_model_client_get(&m_clients[0]);
+
             /* Group message: invert all LEDs. */
             status = inatel_model_client_set_unreliable(&m_clients[GROUP_CLIENT_INDEX],
                                                          !hal_led_pin_get(BSP_LED_0 + button_number), 3);

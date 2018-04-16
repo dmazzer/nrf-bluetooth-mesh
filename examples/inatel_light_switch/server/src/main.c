@@ -103,6 +103,7 @@ static void provisioning_complete(void * p_unused)
 
 static bool get_cb(const inatel_model_server_t * p_server)
 {
+    __LOG(LOG_SRC_APP, LOG_LEVEL_INFO, "Got GET command");
     return hal_led_pin_get(LED_PIN_NUMBER);
 }
 
