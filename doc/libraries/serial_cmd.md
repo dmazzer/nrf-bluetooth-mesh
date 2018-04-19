@@ -822,7 +822,7 @@ _The response has no parameters._
 
 _Opcode:_ `0x66`
 
-_Total length: 4 bytes_
+_Total length: 5 bytes_
 
 Used to respond to the _Provisioning Capabilities Received_ event. It is used to select which kind of OOB authentication method to use. The values can be found in nrf_mesh_prov.h.  If authentication is enabled, the application will receive a _Provisioning Auth Request_ event requesting authentication data.  A _Provisioning ECDH Request_ will be received when the provisioner needs to calculate the ECDH shared secret for the nodes.  The _Provisioning Complete_ event is received when the provisioning procedure has completed successfully. At this point, a provisioner must wait for the _Provisioning Link Closed_ event before re-using the provisioning context.
 
@@ -832,7 +832,8 @@ Type          | Name                                    | Size | Offset | Descri
 --------------|-----------------------------------------|------|--------|------------
 `uint8_t`     | Context ID                              | 1    | 0      | ID of context to set the oob method for.
 `uint8_t`     | OOB Method                              | 1    | 1      | OOB method to use, see @ref nrf_mesh_prov_oob_method_t for accepted values.
-`uint8_t`     | Size                                    | 1    | 2      | Size of the OOB data.
+`uint8_t`     | OOB Action                              | 1    | 2      | OOB action to use, see @ref nrf_mesh_prov_input_action_t or @ref nrf_mesh_prov_output_action_t for values.
+`uint8_t`     | Size                                    | 1    | 3      | Size of the OOB data.
 
 ### Response
 

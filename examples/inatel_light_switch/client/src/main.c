@@ -94,6 +94,8 @@ static health_client_t m_health_client;
 static uint16_t m_provisioned_devices;
 static uint16_t m_configured_devices;
 
+static uint32_t ping_pong_counter;
+
 /* Forward declarations */
 static void client_status_cb(const inatel_model_client_t * p_self, inatel_model_status_t status, uint16_t src);
 static void health_event_cb(const health_client_t * p_client, const health_client_evt_t * p_event);
@@ -147,6 +149,24 @@ static uint16_t provisioned_device_handles_load(void)
     }
 
     return provisioned_devices;
+}
+
+
+static void ping_pong_counter_init(void)
+{
+	ping_pong_counter = 0;
+}
+
+static uint32_t ping_pong_counter_inc(void)
+{
+	ping_pong_counter++;
+	__LOG(LOG_SRC_APP, LOG_LEVEL_INFO, "Ping-pong counter increased to %u.\n", ping_pong_counter);
+	return ping_pong_counter;
+}
+
+static uint32_t ping_pong_counter_get(void)
+{
+	return ping_pong_counter;
 }
 
 /**
@@ -262,6 +282,7 @@ static uint32_t server_index_get(const inatel_model_client_t * p_client)
 static void client_status_cb(const inatel_model_client_t * p_self, inatel_model_status_t status, uint16_t src)
 {
     uint32_t server_index = server_index_get(p_self);
+    __LOG(LOG_SRC_APP, LOG_LEVEL_INFO, "Status CB. Counter is %u.\n", p_self->state.data.payload_counter);
     switch (status)
     {
         case INATEL_MODEL_STATUS_ON:
@@ -331,14 +352,15 @@ static void button_event_handler(uint32_t button_number)
         case 2:
             /* Invert LED. */
             status = inatel_model_client_set(&m_clients[button_number],
-                                              !hal_led_pin_get(BSP_LED_0 + button_number));
+                                              !hal_led_pin_get(BSP_LED_0 + button_number),
+											  ping_pong_counter_inc());
             break;
         case 3:
-//        	status = inatel_model_client_get(&m_clients[0]);
+        	status = inatel_model_client_get(&m_clients[0]);
 
-            /* Group message: invert all LEDs. */
-            status = inatel_model_client_set_unreliable(&m_clients[GROUP_CLIENT_INDEX],
-                                                         !hal_led_pin_get(BSP_LED_0 + button_number), 3);
+//            /* Group message: invert all LEDs. */
+//            status = inatel_model_client_set_unreliable(&m_clients[GROUP_CLIENT_INDEX],
+//                                                         !hal_led_pin_get(BSP_LED_0 + button_number), 3);
             break;
         default:
             break;
@@ -434,6 +456,8 @@ int main(void)
 
     hal_leds_init();
     ERROR_CHECK(hal_buttons_init(button_event_handler));
+
+    ping_pong_counter_init();
 
     /* Set the first LED */
     hal_led_pin_set(BSP_LED_0, true);

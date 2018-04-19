@@ -74,7 +74,7 @@ static inatel_model_server_t m_server;
 
 /* Forward declaration */
 static bool get_cb(const inatel_model_server_t * p_server);
-static bool set_cb(const inatel_model_server_t * p_server, bool value);
+static bool set_cb(const inatel_model_server_t * p_server, bool value, uint32_t counter);
 
 /*****************************************************************************
  * Static utility functions
@@ -103,13 +103,13 @@ static void provisioning_complete(void * p_unused)
 
 static bool get_cb(const inatel_model_server_t * p_server)
 {
-    __LOG(LOG_SRC_APP, LOG_LEVEL_INFO, "Got GET command");
+    __LOG(LOG_SRC_APP, LOG_LEVEL_INFO, "Got GET command\n");
     return hal_led_pin_get(LED_PIN_NUMBER);
 }
 
-static bool set_cb(const inatel_model_server_t * p_server, bool value)
+static bool set_cb(const inatel_model_server_t * p_server, bool value, uint32_t counter)
 {
-    __LOG(LOG_SRC_APP, LOG_LEVEL_INFO, "Got SET command to %u\n", value);
+    __LOG(LOG_SRC_APP, LOG_LEVEL_INFO, "Got SET command to %u, counter %u\n", value, counter);
     hal_led_pin_set(LED_PIN_NUMBER, value);
     return value;
 }

@@ -137,10 +137,8 @@ static void handle_status_cb(access_model_handle_t handle, const access_message_
         return;
     }
 
-    inatel_model_msg_status_t * p_status =
-        (inatel_model_msg_status_t *) p_message->p_data;
-    inatel_model_status_t on_off_status = (p_status->present_on_off ?
-                                              INATEL_MODEL_STATUS_ON : INATEL_MODEL_STATUS_OFF);
+    inatel_model_msg_status_t * p_status = (inatel_model_msg_status_t *) p_message->p_data;
+    inatel_model_status_t on_off_status = (p_status->present_on_off ? INATEL_MODEL_STATUS_ON : INATEL_MODEL_STATUS_OFF);
     p_client->status_cb(p_client, on_off_status, p_message->meta_data.src.value);
 }
 
@@ -172,7 +170,7 @@ uint32_t inatel_model_client_init(inatel_model_client_t * p_client, uint16_t ele
     return access_model_add(&init_params, &p_client->model_handle);
 }
 
-uint32_t inatel_model_client_set(inatel_model_client_t * p_client, bool on_off)
+uint32_t inatel_model_client_set(inatel_model_client_t * p_client, bool on_off, uint32_t counter)
 {
     if (p_client == NULL || p_client->status_cb == NULL)
     {
@@ -184,6 +182,7 @@ uint32_t inatel_model_client_set(inatel_model_client_t * p_client, bool on_off)
     }
 
     p_client->state.data.on_off = on_off ? 1 : 0;
+    p_client->state.data.payload_counter = counter;
     p_client->state.data.tid = m_tid++;
 
     uint32_t status = send_reliable_message(p_client,
@@ -198,10 +197,11 @@ uint32_t inatel_model_client_set(inatel_model_client_t * p_client, bool on_off)
 
 }
 
-uint32_t inatel_model_client_set_unreliable(inatel_model_client_t * p_client, bool on_off, uint8_t repeats)
+uint32_t inatel_model_client_set_unreliable(inatel_model_client_t * p_client, bool on_off, uint32_t counter, uint8_t repeats)
 {
     inatel_model_msg_set_unreliable_t set_unreliable;
     set_unreliable.on_off = on_off ? 1 : 0;
+    set_unreliable.payload_counter = counter;
     set_unreliable.tid = m_tid++;
 
     access_message_tx_t message;

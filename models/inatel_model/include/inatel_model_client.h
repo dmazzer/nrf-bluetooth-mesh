@@ -114,6 +114,7 @@ uint32_t inatel_model_client_init(inatel_model_client_t * p_client, uint16_t ele
  *
  * @param[in] p_client Simple OnOff Client structure pointer.
  * @param[in] on_off   Value to set the Simple OnOff Server state to.
+ * @param[in] counter  Message payload counter for ping-pong test (Inatel).
  *
  * @retval NRF_SUCCESS              Successfully sent message.
  * @retval NRF_ERROR_NULL           NULL pointer in function arguments
@@ -125,13 +126,14 @@ uint32_t inatel_model_client_init(inatel_model_client_t * p_client, uint16_t ele
  * @retval NRF_ERROR_INVALID_PARAM  Model not bound to appkey, publish address not set or wrong
  *                                  opcode format.
  */
-uint32_t inatel_model_client_set(inatel_model_client_t * p_client, bool on_off);
+uint32_t inatel_model_client_set(inatel_model_client_t * p_client, bool on_off, uint32_t counter);
 
 /**
  * Sets the state of the Simple OnOff Server unreliably (without acknowledgment).
  *
  * @param[in] p_client Simple OnOff Client structure pointer.
  * @param[in] on_off   Value to set the Simple OnOff Server state to.
+ * @param[in] counter  Message payload counter for ping-pong test (Inatel).
  * @param[in] repeats  Number of messages to send in a single burst. Increasing the number may
  *                     increase probability of successful delivery.
  *
@@ -144,7 +146,7 @@ uint32_t inatel_model_client_set(inatel_model_client_t * p_client, bool on_off);
  * @retval NRF_ERROR_INVALID_PARAM  Model not bound to appkey, publish address not set or wrong
  *                                  opcode format.
  */
-uint32_t inatel_model_client_set_unreliable(inatel_model_client_t * p_client, bool on_off, uint8_t repeats);
+uint32_t inatel_model_client_set_unreliable(inatel_model_client_t * p_client, bool on_off, uint32_t counter, uint8_t repeats);
 
 /**
  * Gets the state of the Simple OnOff server.

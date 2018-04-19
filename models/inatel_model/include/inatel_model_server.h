@@ -66,9 +66,10 @@ typedef bool (*inatel_model_get_cb_t)(const inatel_model_server_t * p_self);
  * Set callback type.
  * @param[in] p_self Pointer to the Simple OnOff Server context structure.
  * @param[in] on_off Desired state
+ * @param[in] counter Message payload counter for ping-pong test (Inatel)
  * @returns @c true if the current state is On, @c false otherwise.
  */
-typedef bool (*inatel_model_set_cb_t)(const inatel_model_server_t * p_self, bool on_off);
+typedef bool (*inatel_model_set_cb_t)(const inatel_model_server_t * p_self, bool on_off, uint32_t counter);
 
 /** Simple OnOff Server state structure. */
 struct __inatel_model_server

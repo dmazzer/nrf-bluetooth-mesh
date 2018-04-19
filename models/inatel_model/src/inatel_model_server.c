@@ -50,10 +50,12 @@
 
 static void reply_status(const inatel_model_server_t * p_server,
                          const access_message_rx_t * p_message,
-                         bool present_on_off)
+                         bool present_on_off,
+						 uint32_t counter)
 {
     inatel_model_msg_status_t status;
     status.present_on_off = present_on_off ? 1 : 0;
+    status.payload_counter = counter;
     access_message_tx_t reply;
     reply.opcode.opcode = INATEL_MODEL_OPCODE_STATUS;
     reply.opcode.company_id = ACCESS_COMPANY_ID_NORDIC;
@@ -85,25 +87,28 @@ static void handle_set_cb(access_model_handle_t handle, const access_message_rx_
     NRF_MESH_ASSERT(p_server->set_cb != NULL);
 
     bool value = (((inatel_model_msg_set_t*) p_message->p_data)->on_off) > 0;
-    value = p_server->set_cb(p_server, value);
-    reply_status(p_server, p_message, value);
+    uint32_t counter = ((inatel_model_msg_set_t*) p_message->p_data)->payload_counter;
+    value = p_server->set_cb(p_server, value, counter);
+    reply_status(p_server, p_message, value, counter+1);
     publish_state(p_server, value);
 }
 
 static void handle_get_cb(access_model_handle_t handle, const access_message_rx_t * p_message, void * p_args)
 {
     inatel_model_server_t * p_server = p_args;
-    NRF_MESH_ASSERT(p_server->get_cb != NULL);
-    reply_status(p_server, p_message, p_server->get_cb(p_server));
+    uint32_t counter = ((inatel_model_msg_set_t*) p_message->p_data)->payload_counter;
+	NRF_MESH_ASSERT(p_server->get_cb != NULL);
+    reply_status(p_server, p_message, p_server->get_cb(p_server), counter);
 }
 
 static void handle_set_unreliable_cb(access_model_handle_t handle, const access_message_rx_t * p_message, void * p_args)
 {
     inatel_model_server_t * p_server = p_args;
+    uint32_t counter = ((inatel_model_msg_set_t*) p_message->p_data)->payload_counter;
     NRF_MESH_ASSERT(p_server->set_cb != NULL);
     bool value = (((inatel_model_msg_set_unreliable_t*) p_message->p_data)->on_off) > 0;
-    value = p_server->set_cb(p_server, value);
-    publish_state(p_server, value);
+    value = p_server->set_cb(p_server, value, counter+1);
+//    publish_state(p_server, value);
 }
 
 static const access_opcode_handler_t m_opcode_handlers[] =
